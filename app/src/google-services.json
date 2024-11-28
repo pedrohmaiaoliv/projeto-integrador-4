@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1088811680661",
+    "project_id": "apidolivro",
+    "storage_bucket": "apidolivro.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088811680661:android:fd0481ca996854a5132c9c",
+        "android_client_info": {
+          "package_name": "com.example.google_books_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkuCuRsW2iYX7fiF0aEnnHViRQPWr1PjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
