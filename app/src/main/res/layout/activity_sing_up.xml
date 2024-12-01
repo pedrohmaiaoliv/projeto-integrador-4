@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,6 +8,7 @@
     android:background="#F0F2F3"
     tools:context=".MainActivity">
 
+    <!-- Barra Superior -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
         android:layout_width="0dp"
@@ -16,6 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Botão de voltar -->
         <ImageButton
             android:id="@+id/imageButton"
             android:layout_width="50dp"
@@ -29,6 +32,7 @@
             app:layout_constraintVertical_bias="0.533"
             app:srcCompat="@drawable/seta_esquerda" />
 
+        <!-- Título da barra superior -->
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
@@ -42,6 +46,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- CardView que contém o formulário de registro -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
@@ -58,12 +63,13 @@
         app:layout_constraintTop_toBottomOf="@+id/topBar"
         app:layout_constraintVertical_bias="0.5">
 
+        <!-- Layout interno do CardView -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="16dp">
 
-            <!-- Nome -->
+            <!-- Campo Nome -->
             <TextView
                 android:id="@+id/nameLabel"
                 android:layout_width="wrap_content"
@@ -87,7 +93,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/nameLabel" />
 
-            <!-- Email -->
+            <!-- Campo Email -->
             <TextView
                 android:id="@+id/emailLabel"
                 android:layout_width="wrap_content"
@@ -111,7 +117,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/emailLabel" />
 
-            <!-- Senha -->
+            <!-- Campo Senha -->
             <TextView
                 android:id="@+id/passwordLabel"
                 android:layout_width="wrap_content"
@@ -135,7 +141,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/passwordLabel" />
 
-            <!-- Gênero Favorito -->
+            <!-- Campo Gênero Favorito -->
             <TextView
                 android:id="@+id/favoriteGenreLabel"
                 android:layout_width="wrap_content"
@@ -159,8 +165,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/favoriteGenreLabel" />
 
-            <!-- Botões -->
-
+            <!-- Botão de Registro -->
             <Button
                 android:id="@+id/registerButton"
                 android:layout_width="0dp"
@@ -176,6 +181,7 @@
 
     </androidx.cardview.widget.CardView>
 
+    <!-- Barra Inferior -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
         android:layout_width="0dp"

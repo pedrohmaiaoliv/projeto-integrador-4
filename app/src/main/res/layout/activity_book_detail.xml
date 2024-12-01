@@ -6,144 +6,147 @@
     android:layout_height="match_parent"
     android:background="#F0F2F3">
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
-
-    <LinearLayout
+    <!-- Área principal com ScrollView para permitir rolagem -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <!-- Imagem da Capa do Livro -->
-        <ImageView
-            android:id="@+id/book_cover_image"
-            android:layout_width="200dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center_horizontal"
-            android:scaleType="fitCenter"
-            android:contentDescription="Capa do Livro" />
-
-        <!-- Título do Livro -->
-        <TextView
-            android:id="@+id/book_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:text="" />
-
-        <!-- Autor do Livro -->
-        <TextView
-            android:id="@+id/book_author"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="#888888"
-            android:text="" />
-
-        <!-- Avaliação e Data de Publicação -->
+        <!-- Layout vertical que organiza os elementos -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:orientation="vertical">
 
-            <!-- Avaliação (Nota Dinâmica) -->
-            <TextView
-                android:id="@+id/book_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="16sp" />
+            <!-- Imagem da capa do livro -->
+            <ImageView
+                android:id="@+id/book_cover_image"
+                android:layout_width="200dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center_horizontal"
+                android:scaleType="fitCenter"
+                android:contentDescription="Capa do Livro" />
 
-            <!-- Data de Publicação (Dinâmica) -->
+            <!-- Título do livro (dinâmico) -->
             <TextView
-                android:id="@+id/book_publish_date"
-                android:layout_width="wrap_content"
+                android:id="@+id/book_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:text="" />
+
+            <!-- Autor do livro (dinâmico) -->
+            <TextView
+                android:id="@+id/book_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#888888"
+                android:text="" />
+
+            <!-- Linha contendo avaliação e data de publicação -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- Avaliação do livro (dinâmico) -->
+                <TextView
+                    android:id="@+id/book_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="16sp" />
+
+                <!-- Data de publicação (dinâmica) -->
+                <TextView
+                    android:id="@+id/book_publish_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text=""
+                    android:textSize="16sp"
+                    android:textColor="#888888" />
+            </LinearLayout>
+
+            <!-- Número de páginas do livro (dinâmico) -->
+            <TextView
+                android:id="@+id/book_page_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text=""
                 android:textSize="16sp"
                 android:textColor="#888888" />
+
+            <!-- Título da seção de sinopse -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Sinopse"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <!-- Conteúdo da sinopse (dinâmico) -->
+            <TextView
+                android:id="@+id/book_synopsis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+                android:text=""
+                android:textColor="@android:color/black" />
         </LinearLayout>
+    </ScrollView>
 
-        <!-- Número de Páginas (Dinâmico) -->
-        <TextView
-            android:id="@+id/book_page_count"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text=""
-            android:textSize="16sp"
-            android:textColor="#888888" />
+    <!-- Barra de navegação na parte inferior -->
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:background="#567C8D"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Título da Sinopse -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Sinopse"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black" />
+        <!-- Botão de favoritos -->
+        <ImageButton
+            android:id="@+id/favoritos"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/favorite"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/baseline_favorite_24" />
 
-        <!-- Conteúdo da Sinopse (Dinâmico) -->
-        <TextView
-            android:id="@+id/book_synopsis"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            android:text=""
-            android:textColor="@android:color/black" />
+        <!-- Botão de home -->
+        <ImageButton
+            android:id="@+id/home"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/home"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/baseline_home_24" />
+
+        <!-- Botão de configurações -->
+        <ImageButton
+            android:id="@+id/configuracoes"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/settings"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/baseline_settings_24" />
     </LinearLayout>
-
-
-</ScrollView>
-
-    <!-- Barra de Navegação -->
-<LinearLayout
-android:id="@+id/linearLayout2"
-android:layout_width="0dp"
-android:layout_height="75dp"
-android:background="#567C8D"
-android:orientation="horizontal"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintStart_toStartOf="parent">
-
-<ImageButton
-    android:id="@+id/favoritos"
-    android:layout_width="0dp"
-    android:layout_height="70dp"
-    android:layout_weight="1"
-    android:background="@android:color/transparent"
-    android:contentDescription="@string/favorite"
-    android:scaleType="fitCenter"
-    app:srcCompat="@drawable/baseline_favorite_24" />
-
-<ImageButton
-    android:id="@+id/home"
-    android:layout_width="0dp"
-    android:layout_height="70dp"
-    android:layout_weight="1"
-    android:background="@android:color/transparent"
-    android:contentDescription="@string/home"
-    android:scaleType="fitCenter"
-    app:srcCompat="@drawable/baseline_home_24" />
-
-<ImageButton
-    android:id="@+id/configuracoes"
-    android:layout_width="0dp"
-    android:layout_height="70dp"
-    android:layout_weight="1"
-    android:background="@android:color/transparent"
-    android:contentDescription="@string/settings"
-    android:scaleType="fitCenter"
-    app:srcCompat="@drawable/baseline_settings_24" />
-</LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

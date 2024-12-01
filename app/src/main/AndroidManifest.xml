@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- Permissão de acesso à internet -->
+
+
+    <!-- Declaração de permissões necessárias para o funcionamento do aplicativo -->
+
+    <!-- Permissão para acessar a internet -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Permissão para ler o armazenamento -->
+    <!-- Permissão para ler o armazenamento externo no dispositivo -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -18,41 +23,26 @@
         android:theme="@style/Theme.Googlebooksproject"
         tools:targetApi="31">
 
-        <!-- Login Activity (Main Activity) -->
+
+        <!-- Configuração da LoginActivity como a atividade inicial do aplicativo -->
         <activity
             android:name=".LoginActivity"
-            android:exported="true"
-            android:launchMode="singleTask">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Main Activity -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:launchMode="singleTask"/>
-
-        <!-- Settings Activity -->
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="false" />
-
-        <!-- Sign Up Activity -->
-        <activity
-            android:name=".SingUpActivity"
-            android:exported="false" />
-
-        <!-- Book Detail Activity -->
-        <activity
-            android:name=".BookDetailActivity"
-            android:exported="false" />
-
-        <!-- Favorites Activity -->
-        <activity
-            android:name=".FavoritesActivity"
-            android:exported="false" />
+        <!-- Atividade principal do aplicativo após o login -->
+        <activity android:name=".MainActivity" android:exported="false" />
+        <!-- Atividade de configurações -->
+        <activity android:name=".SettingsActivity" android:exported="false" />
+        <!-- Atividade de cadastro de novos usuários -->
+        <activity android:name=".SingUpActivity" android:exported="false" />
+        <!-- Atividade de detalhes de um livro -->
+        <activity android:name=".BookDetailActivity" android:exported="false" />
+        <!-- Atividade que exibe os favoritos do usuário -->
+        <activity android:name=".FavoritesActivity" android:exported="false" />
     </application>
 </manifest>

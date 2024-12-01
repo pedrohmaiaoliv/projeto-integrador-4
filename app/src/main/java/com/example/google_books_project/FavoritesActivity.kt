@@ -18,44 +18,44 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
+// Activity responsável por exibir os livros favoritos do usuário
 class FavoritesActivity : AppCompatActivity() {
 
-    private lateinit var recyclerViewFavorites: RecyclerView
-    private lateinit var favoriteBookAdapter: FavoriteBookAdapter
-    private var favoriteBooks: MutableList<BookItem> = mutableListOf()
+    private lateinit var recyclerViewFavorites: RecyclerView // RecyclerView para exibir a lista de favoritos
+    private lateinit var favoriteBookAdapter: FavoriteBookAdapter // Adapter para gerenciar os dados do RecyclerView
+    private var favoriteBooks: MutableList<BookItem> = mutableListOf() // Lista mutável para armazenar os livros favoritos
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge() // Ativa o suporte para bordas sem margens no layout
         setContentView(R.layout.activity_favorites)
 
-        // Ajusta as margens para considerar as barras de sistema
+        // Ajusta as margens do layout para considerar as barras do sistema
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_layout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Inicialização do RecyclerView
+        // Inicialização do RecyclerView e do adapter
         recyclerViewFavorites = findViewById(R.id.recyclerViewFavorites)
-        recyclerViewFavorites.layoutManager = LinearLayoutManager(this)
-
-        // Inicializa o adapter com os callbacks
+        recyclerViewFavorites.layoutManager = LinearLayoutManager(this) // Define layout linear
         favoriteBookAdapter = FavoriteBookAdapter(
             favoriteBooks,
-            onUnfavoriteClick = { book -> removeFavoriteBook(book) },
-            onBookClick = { book -> openBookDetail(book) }
+            onUnfavoriteClick = { book -> removeFavoriteBook(book) }, // Callback para desfavoritar
+            onBookClick = { book -> openBookDetail(book) } // Callback para abrir detalhes do livro
         )
         recyclerViewFavorites.adapter = favoriteBookAdapter
 
-        // Configura botões da barra inferior e volta
+        // Configuração dos botões de navegação e botão de voltar
         setupNavigationMenu()
         setupBackButton()
 
-        // Carrega os livros favoritos
+        // Carrega os livros favoritos do Firestore
         loadFavoriteBooks()
     }
 
+    // Configura o botão de voltar para a MainActivity
     private fun setupBackButton() {
         val backButton = findViewById<ImageButton>(R.id.imageButton)
         backButton.setOnClickListener {
@@ -65,6 +65,7 @@ class FavoritesActivity : AppCompatActivity() {
         }
     }
 
+    // Configura os botões do menu de navegação
     private fun setupNavigationMenu() {
         val homeButton = findViewById<ImageButton>(R.id.home)
         homeButton.setOnClickListener {
@@ -80,22 +81,23 @@ class FavoritesActivity : AppCompatActivity() {
 
         val favoritosButton = findViewById<ImageButton>(R.id.favoritos)
         favoritosButton.setOnClickListener {
-            // Já estamos na tela de favoritos, nenhuma ação necessária
+            // Nenhuma ação necessária, já está na tela de favoritos
         }
     }
 
+    // Carrega os livros favoritos do Firestore para o RecyclerView
     private fun loadFavoriteBooks() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val userId = FirebaseAuth.getInstance().currentUser?.uid // Obtém o ID do usuário autenticado
         val firestore = FirebaseFirestore.getInstance()
 
         if (userId != null) {
             firestore.collection("users").document(userId).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        val books = document.get("favoriteBooks") as? List<Map<String, Any>>
+                        val books = document.get("favoriteBooks") as? List<Map<String, Any>> // Obtém os livros favoritos
                         books?.let {
                             favoriteBooks.clear()
-                            favoriteBooks.addAll(it.map { bookMap ->
+                            favoriteBooks.addAll(it.map { bookMap -> // Mapeia os dados recebidos para BookItem
                                 BookItem(
                                     title = bookMap["title"] as? String ?: "Título não disponível",
                                     author = bookMap["author"] as? String ?: "Autor desconhecido",
@@ -115,7 +117,7 @@ class FavoritesActivity : AppCompatActivity() {
                                     )
                                 )
                             })
-                            favoriteBookAdapter.notifyDataSetChanged()
+                            favoriteBookAdapter.notifyDataSetChanged() // Atualiza o RecyclerView
                         }
                     } else {
                         Toast.makeText(this, "Nenhum favorito encontrado.", Toast.LENGTH_SHORT).show()
@@ -129,6 +131,7 @@ class FavoritesActivity : AppCompatActivity() {
         }
     }
 
+    // Remove um livro favorito do Firestore e atualiza a lista local
     private fun removeFavoriteBook(book: BookItem) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
@@ -141,10 +144,10 @@ class FavoritesActivity : AppCompatActivity() {
 
             FirebaseFirestore.getInstance().collection("users")
                 .document(userId)
-                .update("favoriteBooks", FieldValue.arrayRemove(bookData))
+                .update("favoriteBooks", FieldValue.arrayRemove(bookData)) // Remove o livro dos favoritos
                 .addOnSuccessListener {
-                    favoriteBooks.remove(book)
-                    favoriteBookAdapter.notifyDataSetChanged()
+                    favoriteBooks.remove(book) // Remove da lista local
+                    favoriteBookAdapter.notifyDataSetChanged() // Atualiza o RecyclerView
                     Toast.makeText(this, "Livro removido dos favoritos!", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { e ->
@@ -155,6 +158,7 @@ class FavoritesActivity : AppCompatActivity() {
         }
     }
 
+    // Abre os detalhes de um livro favorito
     private fun openBookDetail(book: BookItem) {
         val intent = Intent(this, BookDetailActivity::class.java)
         intent.putExtra("title", book.volumeInfo.title)
@@ -164,6 +168,6 @@ class FavoritesActivity : AppCompatActivity() {
         intent.putExtra("pageCount", book.volumeInfo.pageCount ?: 0)
         intent.putExtra("rating", book.volumeInfo.averageRating ?: 0f)
         intent.putExtra("description", book.volumeInfo.description ?: "Descrição indisponível")
-        startActivity(intent)
+        startActivity(intent) // Inicia a atividade de detalhes do livro
     }
 }

@@ -11,75 +11,84 @@ import com.example.google_books_project.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+// Activity de Login para autenticação do usuário com Firebase
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityLoginBinding
-    private lateinit var auth: FirebaseAuth
+    private lateinit var binding: ActivityLoginBinding // Usando View Binding para facilitar o acesso às views
+    private lateinit var auth: FirebaseAuth // Instância do FirebaseAuth para autenticação
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        enableEdgeToEdge() // Ativa suporte para layouts sem bordas
+        binding = ActivityLoginBinding.inflate(layoutInflater) // Inicializa o binding com o layout
         setContentView(binding.root)
 
-        // Inicializar FirebaseAuth
+        // Inicializa a instância do FirebaseAuth
         auth = FirebaseAuth.getInstance()
 
-        // Aplicar o listener à View raiz
+        // Ajusta o layout para considerar as barras do sistema
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        setUpView()
+        setUpView() // Configura os eventos de clique e funcionalidades
     }
 
+    // Configuração dos eventos e lógica da interface
     private fun setUpView() {
-        // Login com Firebase Authentication
+        // Botão de login usando Firebase Authentication
         binding.loginButton.setOnClickListener {
-            val email = binding.emailInput.text.toString()
-            val password = binding.passwordInput.text.toString()
+            val email = binding.emailInput.text.toString() // Obtém o texto do campo de email
+            val password = binding.passwordInput.text.toString() // Obtém o texto do campo de senha
 
             if (email.isEmpty() || password.isEmpty()) {
+                // Exibe um aviso se os campos estiverem vazios
                 Toast.makeText(this, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // Autenticação do usuário com email e senha
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val userId = auth.currentUser?.uid
+                        val userId = auth.currentUser?.uid // Obtém o ID do usuário autenticado
                         if (userId != null) {
-                            createUserDocumentIfNotExists(userId)
+                            createUserDocumentIfNotExists(userId) // Cria o documento do usuário no Firestore, se necessário
                         }
+                        // Navega para a MainActivity após login bem-sucedido
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
-                        finish()
+                        finish() // Finaliza a LoginActivity
                     } else {
+                        // Exibe mensagem de erro caso o login falhe
                         Toast.makeText(this, "Erro ao fazer login: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
         }
 
-        // Redirecionar para a SingUpActivity
+        // Botão para redirecionar à SingUpActivity
         binding.registerButton.setOnClickListener {
             val intent = Intent(this, SingUpActivity::class.java)
-            startActivity(intent)
+            startActivity(intent) // Abre a tela de registro
         }
     }
 
+    // Cria o documento do usuário no Firestore, se ainda não existir
     private fun createUserDocumentIfNotExists(userId: String) {
         val userDocument = FirebaseFirestore.getInstance().collection("users").document(userId)
 
         userDocument.get().addOnSuccessListener { document ->
             if (!document.exists()) {
+                // Se o documento do usuário não existir, cria um com dados iniciais
                 val initialData = mapOf(
-                    "favoriteBooks" to emptyList<Map<String, String>>()
+                    "favoriteBooks" to emptyList<Map<String, String>>() // Inicializa a lista de favoritos vazia
                 )
-                userDocument.set(initialData)
+                userDocument.set(initialData) // Salva o documento no Firestore
             }
         }.addOnFailureListener { e ->
+            // Exibe uma mensagem de erro caso falhe ao criar o documento
             Toast.makeText(this, "Erro ao criar documento do usuário: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }

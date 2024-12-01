@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -27,6 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:inputType="text" />
+    <!-- Um campo de entrada com uma lupa para busca de livros. Pode pesquisar por autor, título, ISBN, entre outros. -->
 
     <!-- Dropdown Menu -->
     <Spinner
@@ -38,6 +40,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchEditText" />
+    <!-- Um menu suspenso para seleção de gêneros literários, posicionado logo abaixo do campo de pesquisa. -->
 
     <!-- RecyclerView para exibir a lista de livros -->
     <androidx.recyclerview.widget.RecyclerView
@@ -50,6 +53,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:clipToPadding="false"/>
+    <!-- Uma lista reciclável para exibir os livros encontrados, ocupando a maior parte da tela entre o spinner e a barra de navegação. -->
 
     <!-- Barra de Navegação -->
     <LinearLayout
@@ -62,6 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <!-- Botão de Favoritos -->
         <ImageButton
             android:id="@+id/favoritos"
             android:layout_width="0dp"
@@ -71,7 +76,9 @@
             android:contentDescription="@string/favorite"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/baseline_favorite_24" />
+        <!-- Botão para navegar até a lista de favoritos. -->
 
+        <!-- Botão de Home -->
         <ImageButton
             android:id="@+id/home"
             android:layout_width="0dp"
@@ -81,7 +88,9 @@
             android:contentDescription="@string/home"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/baseline_home_24" />
+        <!-- Botão para navegar até a tela inicial (home). -->
 
+        <!-- Botão de Configurações -->
         <ImageButton
             android:id="@+id/configuracoes"
             android:layout_width="0dp"
@@ -91,6 +100,6 @@
             android:contentDescription="@string/settings"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/baseline_settings_24" />
+        <!-- Botão para navegar até a tela de configurações. -->
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
