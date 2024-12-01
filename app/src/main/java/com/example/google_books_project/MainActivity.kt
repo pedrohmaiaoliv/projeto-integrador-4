@@ -1,6 +1,5 @@
 package com.example.google_books_project
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -25,8 +24,6 @@ import com.example.google_books_project.util.RetrofitInstance
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -80,7 +77,11 @@ class MainActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 val query = searchEditText.text.toString().trim()
                 if (query.isNotEmpty()) {
-                    searchBooks(query)
+                    if (isCategory(query)) {
+                        searchBooksByGenre(query) // Busca por categoria
+                    } else {
+                        searchBooks(query) // Busca geral
+                    }
                 }
                 true
             } else {
@@ -132,6 +133,11 @@ class MainActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
     }
 
+    private fun isCategory(query: String): Boolean {
+        val genres = (0 until adapter.count).map { adapter.getItem(it).toString() }
+        return genres.contains(query)
+    }
+
     private fun searchBooks(query: String) {
         val apiKey = getString(R.string.google_books_api_key)
         RetrofitInstance.api.searchBooks(query, apiKey).enqueue(object : Callback<BooksResponse> {
@@ -167,8 +173,8 @@ class MainActivity : AppCompatActivity() {
     private fun updateRecyclerView(books: List<BookItem>) {
         bookAdapter = BookAdapter(
             books,
-            { book, isFavorite -> saveFavoriteBook(book, isFavorite) },  // Lambda explícita para saveFavoriteBook
-            { book -> openBookDetail(book) }                             // Lambda explícita para openBookDetail
+            { book, isFavorite -> saveFavoriteBook(book, isFavorite) },
+            { book -> openBookDetail(book) }
         )
         recyclerViewBooks.adapter = bookAdapter
         bookAdapter.notifyDataSetChanged()

@@ -21,26 +21,36 @@
         <!-- Login Activity (Main Activity) -->
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Other Activities -->
+        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask"/>
+
+        <!-- Settings Activity -->
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
+
+        <!-- Sign Up Activity -->
         <activity
             android:name=".SingUpActivity"
             android:exported="false" />
+
+        <!-- Book Detail Activity -->
         <activity
             android:name=".BookDetailActivity"
             android:exported="false" />
+
+        <!-- Favorites Activity -->
         <activity
             android:name=".FavoritesActivity"
             android:exported="false" />
