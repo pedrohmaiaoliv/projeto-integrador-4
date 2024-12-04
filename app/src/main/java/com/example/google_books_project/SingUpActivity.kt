@@ -13,77 +13,82 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-// Activity responsável pelo cadastro de novos usuários
 class SingUpActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth // Instância do Firebase Authentication
-    private lateinit var firestore: FirebaseFirestore // Instância do Firestore para salvar dados do usuário
+    // Declaração das variáveis para autenticação e Firestore
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Ativa suporte para layouts sem bordas
-        setContentView(R.layout.activity_sing_up)
+        enableEdgeToEdge() // Ativa o modo de tela cheia
+        setContentView(R.layout.activity_sing_up) // Configura o layout da atividade de cadastro
 
-        // Inicializa Firebase Auth e Firestore
+        // Inicializa as instâncias do FirebaseAuth e Firestore
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        // Botão para voltar à tela de login
+        // Configuração do botão de imagem para redirecionar ao LoginActivity
         val imageButton = findViewById<ImageButton>(R.id.imageButton)
         imageButton.setOnClickListener {
+            // Ao clicar, o usuário é redirecionado para a tela de login
             val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent) // Navega para a tela de login
+            startActivity(intent)
         }
 
-        // Botão para registrar um novo usuário
+        // Configura o botão de registro para criar uma conta de usuário
         val registerButton = findViewById<Button>(R.id.registerButton)
         registerButton.setOnClickListener {
-            val name = findViewById<EditText>(R.id.nameInput).text.toString() // Nome do usuário
-            val email = findViewById<EditText>(R.id.emailInput).text.toString() // Email do usuário
-            val password = findViewById<EditText>(R.id.passwordInput).text.toString() // Senha do usuário
-            val favoriteGenre = findViewById<EditText>(R.id.favoriteGenreInput).text.toString() // Gênero favorito do usuário
+            // Obtém os valores dos campos de input (nome, email, senha, gênero favorito)
+            val name = findViewById<EditText>(R.id.nameInput).text.toString()
+            val email = findViewById<EditText>(R.id.emailInput).text.toString()
+            val password = findViewById<EditText>(R.id.passwordInput).text.toString()
+            val favoriteGenre = findViewById<EditText>(R.id.favoriteGenreInput).text.toString()
 
-            // Verifica se todos os campos foram preenchidos
+            // Verifica se algum campo está vazio e exibe uma mensagem de erro
             if (name.isEmpty() || email.isEmpty() || password.isEmpty() || favoriteGenre.isEmpty()) {
                 Toast.makeText(this, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Cria uma nova conta com email e senha
+            // Cria um novo usuário com email e senha usando o Firebase Auth
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
+                    // Verifica se o cadastro foi bem-sucedido
                     if (task.isSuccessful) {
-                        val userId = auth.currentUser?.uid // Obtém o ID do usuário recém-criado
+                        // Se o registro foi bem-sucedido, obtém o ID do usuário
+                        val userId = auth.currentUser?.uid
+                        // Cria um mapa com as informações do usuário para salvar no Firestore
                         val user = hashMapOf(
-                            "name" to name, // Nome do usuário
-                            "email" to email, // Email do usuário
-                            "favoriteGenre" to favoriteGenre, // Gênero favorito
-                            "favoriteBooks" to emptyList<Map<String, String>>() // Lista inicial de livros favoritos (vazia)
+                            "name" to name,
+                            "email" to email,
+                            "favoriteGenre" to favoriteGenre,
+                            "favoriteBooks" to emptyList<Map<String, String>>() // Gêneros e livros favoritos iniciais (vazio)
                         )
 
-                        // Salva os dados do usuário no Firestore
+                        // Verifica se o ID do usuário é válido e grava os dados no Firestore
                         if (userId != null) {
                             firestore.collection("users").document(userId)
-                                .set(user)
+                                .set(user) // Salva as informações do usuário no Firestore
                                 .addOnSuccessListener {
-                                    // Redireciona para a tela principal após o cadastro
+                                    // Se for bem-sucedido, redireciona o usuário para a tela principal (MainActivity)
                                     val intent = Intent(this, MainActivity::class.java)
                                     startActivity(intent)
                                     finish() // Fecha a tela de cadastro
                                 }
                         }
                     } else {
-                        // Exibe mensagem de erro caso o cadastro falhe
+                        // Caso haja erro no processo de registro, exibe uma mensagem de erro
                         Toast.makeText(this, "Erro ao registrar: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
         }
 
-        // Ajusta o layout para considerar as barras do sistema
+        // Configuração de barra de sistema para garantir que os componentes não fiquem atrás da barra do sistema
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.topBar)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+            insets // Aplica os insets para ajustar o layout
         }
     }
 }

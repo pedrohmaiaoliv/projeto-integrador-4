@@ -5,7 +5,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F2F3">
+    android:background="#F0F2F3"> <!-- Plano de fundo da tela -->
 
     <!-- Barra Superior -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,9 +15,9 @@
         android:background="#567C8D"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"> <!-- Barra superior com fundo colorido -->
 
-        <!-- Botão de voltar -->
+        <!-- Botão de Voltar -->
         <ImageButton
             android:id="@+id/imageButton"
             android:layout_width="50dp"
@@ -29,9 +29,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.533"
-            app:srcCompat="@drawable/seta_esquerda" />
+            app:srcCompat="@drawable/seta_esquerda" /> <!-- Ícone do botão de voltar -->
 
-        <!-- Título da barra superior -->
+        <!-- Título da Barra -->
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
@@ -42,10 +42,10 @@
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" /> <!-- Texto que aparece no centro da barra -->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- RecyclerView para exibir os favoritos -->
+    <!-- RecyclerView para exibir os itens favoritos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFavorites"
         android:layout_width="0dp"
@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/topBar"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"/> <!-- Exibe a lista de favoritos -->
 
     <!-- Barra de Navegação -->
     <LinearLayout
@@ -64,9 +64,9 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"> <!-- Barra de navegação inferior com três ícones -->
 
-        <!-- Botão de favoritos -->
+        <!-- Botão de Favoritos -->
         <ImageButton
             android:id="@+id/favoritos"
             android:layout_width="0dp"
@@ -75,9 +75,9 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/favorite"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/baseline_favorite_24" />
+            app:srcCompat="@drawable/baseline_favorite_24" /> <!-- Ícone de favoritos -->
 
-        <!-- Botão de home -->
+        <!-- Botão Home -->
         <ImageButton
             android:id="@+id/home"
             android:layout_width="0dp"
@@ -86,9 +86,9 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/home"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/baseline_home_24" />
+            app:srcCompat="@drawable/baseline_home_24" /> <!-- Ícone de home -->
 
-        <!-- Botão de configurações -->
+        <!-- Botão de Configurações -->
         <ImageButton
             android:id="@+id/configuracoes"
             android:layout_width="0dp"
@@ -97,6 +97,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/settings"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/baseline_settings_24" />
+            app:srcCompat="@drawable/baseline_settings_24" /> <!-- Ícone de configurações -->
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

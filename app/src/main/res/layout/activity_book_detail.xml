@@ -4,30 +4,29 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F2F3">
+    android:background="#F0F2F3"> <!-- Plano de fundo da tela -->
 
-    <!-- Área principal com ScrollView para permitir rolagem -->
-    <ScrollView
+    <!-- ScrollView para permitir rolagem no conteúdo -->
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="16dp"> <!-- Padding de 16dp para o conteúdo da ScrollView -->
 
-        <!-- Layout vertical que organiza os elementos -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"> <!-- LinearLayout para organizar os itens verticalmente -->
 
-            <!-- Imagem da capa do livro -->
+            <!-- Imagem da Capa do Livro -->
             <ImageView
                 android:id="@+id/book_cover_image"
                 android:layout_width="200dp"
                 android:layout_height="300dp"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="fitCenter"
-                android:contentDescription="Capa do Livro" />
+                android:contentDescription="Capa do Livro" /> <!-- Imagem da capa do livro -->
 
-            <!-- Título do livro (dinâmico) -->
+            <!-- Título do Livro -->
             <TextView
                 android:id="@+id/book_title"
                 android:layout_width="match_parent"
@@ -36,33 +35,33 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
-                android:text="" />
+                android:text="" /> <!-- Título do livro -->
 
-            <!-- Autor do livro (dinâmico) -->
+            <!-- Autor do Livro -->
             <TextView
                 android:id="@+id/book_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:textColor="#888888"
-                android:text="" />
+                android:text="" /> <!-- Autor do livro -->
 
-            <!-- Linha contendo avaliação e data de publicação -->
+            <!-- Avaliação e Data de Publicação -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="8dp">
 
-                <!-- Avaliação do livro (dinâmico) -->
+                <!-- Avaliação (Nota Dinâmica) -->
                 <TextView
                     android:id="@+id/book_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textSize="16sp" />
+                    android:textSize="16sp" /> <!-- Exibe a avaliação do livro -->
 
-                <!-- Data de publicação (dinâmica) -->
+                <!-- Data de Publicação (Dinâmica) -->
                 <TextView
                     android:id="@+id/book_publish_date"
                     android:layout_width="wrap_content"
@@ -70,10 +69,10 @@
                     android:layout_marginStart="16dp"
                     android:text=""
                     android:textSize="16sp"
-                    android:textColor="#888888" />
+                    android:textColor="#888888" /> <!-- Exibe a data de publicação do livro -->
             </LinearLayout>
 
-            <!-- Número de páginas do livro (dinâmico) -->
+            <!-- Número de Páginas (Dinâmico) -->
             <TextView
                 android:id="@+id/book_page_count"
                 android:layout_width="match_parent"
@@ -81,9 +80,9 @@
                 android:layout_marginTop="8dp"
                 android:text=""
                 android:textSize="16sp"
-                android:textColor="#888888" />
+                android:textColor="#888888" /> <!-- Exibe o número de páginas do livro -->
 
-            <!-- Título da seção de sinopse -->
+            <!-- Título da Sinopse -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -91,9 +90,9 @@
                 android:text="Sinopse"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black" /> <!-- Título "Sinopse" -->
 
-            <!-- Conteúdo da sinopse (dinâmico) -->
+            <!-- Conteúdo da Sinopse (Dinâmico) -->
             <TextView
                 android:id="@+id/book_synopsis"
                 android:layout_width="match_parent"
@@ -101,11 +100,12 @@
                 android:layout_marginTop="8dp"
                 android:textSize="16sp"
                 android:text=""
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black" /> <!-- Sinopse do livro -->
         </LinearLayout>
+
     </ScrollView>
 
-    <!-- Barra de navegação na parte inferior -->
+    <!-- Barra de Navegação -->
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="0dp"
@@ -116,7 +116,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Botão de favoritos -->
+        <!-- Botão de Favoritos -->
         <ImageButton
             android:id="@+id/favoritos"
             android:layout_width="0dp"
@@ -125,9 +125,9 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/favorite"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/baseline_favorite_24" />
+            app:srcCompat="@drawable/baseline_favorite_24" /> <!-- Ícone de favoritos -->
 
-        <!-- Botão de home -->
+        <!-- Botão Home -->
         <ImageButton
             android:id="@+id/home"
             android:layout_width="0dp"
@@ -136,9 +136,9 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/home"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/baseline_home_24" />
+            app:srcCompat="@drawable/baseline_home_24" /> <!-- Ícone de home -->
 
-        <!-- Botão de configurações -->
+        <!-- Botão de Configurações -->
         <ImageButton
             android:id="@+id/configuracoes"
             android:layout_width="0dp"
@@ -147,6 +147,6 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/settings"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/baseline_settings_24" />
+            app:srcCompat="@drawable/baseline_settings_24" /> <!-- Ícone de configurações -->
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

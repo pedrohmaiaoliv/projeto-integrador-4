@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp">
-    <!-- Layout principal em orientação vertical para organizar os elementos: capa do livro, título e ícone de favorito -->
 
-    <!-- Imagem da capa do livro -->
     <ImageView
         android:id="@+id/bookCover"
         android:layout_width="120dp"
         android:layout_height="180dp"
         android:scaleType="centerCrop"
         android:contentDescription="Book Cover"/>
-    <!-- Imagem para exibir a capa do livro, com dimensões fixas de 120x180 dp e conteúdo ajustado ao centro com corte. -->
 
-    <!-- Título do livro -->
     <TextView
         android:id="@+id/bookTitle"
         android:layout_width="match_parent"
@@ -26,9 +21,7 @@
         android:paddingTop="4dp"
         android:maxLines="2"
         android:ellipsize="end"/>
-    <!-- Texto para exibir o título do livro. Configurado para ter no máximo 2 linhas, com texto cortado ao final caso ultrapasse o limite. -->
 
-    <!-- Ícone de favorito -->
     <ImageView
         android:id="@+id/favoriteIcon"
         android:layout_width="24dp"
@@ -37,5 +30,5 @@
         android:layout_marginTop="4dp"
         android:contentDescription="@string/favorite_icon_desc"
         android:src="@drawable/ic_favorite_border" />
-    <!-- Ícone para indicar se o livro é favorito. Posicionado centralizado horizontalmente, com margem superior para separação do título. -->
+
 </LinearLayout>

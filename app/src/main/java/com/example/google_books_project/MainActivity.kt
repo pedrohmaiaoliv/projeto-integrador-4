@@ -1,6 +1,5 @@
 package com.example.google_books_project
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -25,70 +24,71 @@ import com.example.google_books_project.util.RetrofitInstance
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-// Activity principal responsável por exibir livros, buscar por gêneros ou termos, e gerenciar favoritos
 class MainActivity : AppCompatActivity() {
-    private lateinit var genreSpinner: Spinner // Spinner para selecionar gêneros
-    private lateinit var adapter: ArrayAdapter<String> // Adapter para gerenciar os itens do Spinner
-    private lateinit var recyclerViewBooks: RecyclerView // RecyclerView para exibir os livros
-    private lateinit var bookAdapter: BookAdapter // Adapter para gerenciar os livros no RecyclerView
-    private lateinit var searchEditText: EditText // Campo de entrada de texto para buscas
+    private lateinit var genreSpinner: Spinner // Spinner para selecionar o gênero
+    private lateinit var adapter: ArrayAdapter<String> // Adapter para popular o Spinner
+    private lateinit var recyclerViewBooks: RecyclerView // RecyclerView para exibir a lista de livros
+    private lateinit var bookAdapter: BookAdapter // Adaptador do RecyclerView
+    private lateinit var searchEditText: EditText // EditText para buscar livros
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Ativa suporte para layouts sem bordas
+        enableEdgeToEdge() // Ativa o modo edge-to-edge para ocupar toda a tela
         setContentView(R.layout.activity_main)
 
-        // Ajusta o layout para considerar as barras do sistema
+        // Ajusta o padding da View para evitar que o conteúdo se sobreponha às barras do sistema
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Configuração inicial do Spinner de gêneros
+        // Inicializa o Spinner de gêneros
         genreSpinner = findViewById(R.id.genre_spinner)
         adapter = ArrayAdapter(this, R.layout.spinner_item, mutableListOf("Gêneros"))
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         genreSpinner.adapter = adapter
 
-        // Listener para detectar seleção de itens no Spinner
+        // Listener para quando um item é selecionado no Spinner
         genreSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (position != 0) { // Ignora o item "Gêneros"
+                if (position != 0) {
                     val selectedGenre = parent.getItemAtPosition(position).toString()
                     Toast.makeText(this@MainActivity, "Gênero selecionado: $selectedGenre", Toast.LENGTH_SHORT).show()
-                    searchBooksByGenre(selectedGenre) // Busca livros pelo gênero selecionado
+                    searchBooksByGenre(selectedGenre) // Busca livros por gênero
                 }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        fetchGenres() // Carrega os gêneros na inicialização
+        // Carrega os gêneros disponíveis
+        fetchGenres()
 
-        // Configuração do RecyclerView para exibir os livros
+        // Configura o RecyclerView para exibir os livros
         recyclerViewBooks = findViewById(R.id.recyclerViewBooks)
-        recyclerViewBooks.layoutManager = GridLayoutManager(this, 3) // Define layout em 3 colunas
+        recyclerViewBooks.layoutManager = GridLayoutManager(this, 3)
 
-        // Inicializa o adapter do RecyclerView
         bookAdapter = BookAdapter(emptyList(), this::saveFavoriteBook) { book ->
-            openBookDetail(book) // Callback para abrir detalhes de um livro
+            openBookDetail(book)
         }
         recyclerViewBooks.adapter = bookAdapter
 
-        // Configuração do campo de busca
+        // Configura a busca por livros
         searchEditText = findViewById(R.id.searchEditText)
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 val query = searchEditText.text.toString().trim()
                 if (query.isNotEmpty()) {
-                    searchBooks(query) // Realiza busca pelo termo inserido
+                    if (isCategory(query)) {
+                        searchBooksByGenre(query) // Busca por categoria
+                    } else {
+                        searchBooks(query) // Busca geral
+                    }
                 }
                 true
             } else {
@@ -96,33 +96,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        setupNavigationMenu() // Configuração do menu de navegação inferior
+        setupNavigationMenu() // Configura o menu de navegação
     }
 
-    // Configura os botões de navegação inferior
+    // Configura o menu de navegação (favoritos e configurações)
     private fun setupNavigationMenu() {
         val favoritesButton = findViewById<ImageButton>(R.id.favoritos)
         val settingsButton = findViewById<ImageButton>(R.id.configuracoes)
 
         favoritesButton.setOnClickListener {
-            startActivity(Intent(this, FavoritesActivity::class.java)) // Vai para a tela de favoritos
+            startActivity(Intent(this, FavoritesActivity::class.java)) // Navega para a tela de favoritos
         }
 
         settingsButton.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java)) // Vai para a tela de configurações
+            startActivity(Intent(this, SettingsActivity::class.java)) // Navega para a tela de configurações
         }
     }
 
-    // Faz uma requisição para buscar gêneros disponíveis
+    // Método para buscar gêneros de livros na API do Google Books
     private fun fetchGenres() {
-        val apiKey = getString(R.string.google_books_api_key) // Obtém a chave da API
+        val apiKey = getString(R.string.google_books_api_key)
 
         RetrofitInstance.api.searchBooks("subject", apiKey).enqueue(object : Callback<BooksResponse> {
             override fun onResponse(call: Call<BooksResponse>, response: Response<BooksResponse>) {
                 if (response.isSuccessful) {
                     val books = response.body()?.items ?: emptyList()
                     val genres = books
-                        .flatMap { it.volumeInfo.categories ?: emptyList() } // Extrai os gêneros dos livros
+                        .flatMap { it.volumeInfo.categories ?: emptyList() } // Extrai as categorias dos livros
                         .distinct()
                         .sorted()
                     updateGenreSpinner(genres) // Atualiza o Spinner com os gêneros
@@ -135,22 +135,28 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    // Atualiza o Spinner com os gêneros encontrados
+    // Atualiza o Spinner com a lista de gêneros
     private fun updateGenreSpinner(genres: List<String>) {
         adapter.clear()
-        adapter.add("Gêneros") // Adiciona o item padrão
-        adapter.addAll(genres) // Adiciona os gêneros
+        adapter.add("Gêneros")
+        adapter.addAll(genres)
         adapter.notifyDataSetChanged()
     }
 
-    // Realiza busca de livros pelo termo inserido
+    // Verifica se a query é uma categoria existente
+    private fun isCategory(query: String): Boolean {
+        val genres = (0 until adapter.count).map { adapter.getItem(it).toString() }
+        return genres.contains(query)
+    }
+
+    // Método para buscar livros pela query geral
     private fun searchBooks(query: String) {
         val apiKey = getString(R.string.google_books_api_key)
         RetrofitInstance.api.searchBooks(query, apiKey).enqueue(object : Callback<BooksResponse> {
             override fun onResponse(call: Call<BooksResponse>, response: Response<BooksResponse>) {
                 if (response.isSuccessful) {
                     val books = response.body()?.items ?: emptyList()
-                    updateRecyclerView(books) // Atualiza a lista de livros no RecyclerView
+                    updateRecyclerView(books) // Atualiza o RecyclerView com os resultados
                 }
             }
 
@@ -160,14 +166,14 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    // Realiza busca de livros pelo gênero selecionado
+    // Método para buscar livros por gênero específico
     private fun searchBooksByGenre(genre: String) {
         val apiKey = getString(R.string.google_books_api_key)
         RetrofitInstance.api.searchBooks("subject:$genre", apiKey).enqueue(object : Callback<BooksResponse> {
             override fun onResponse(call: Call<BooksResponse>, response: Response<BooksResponse>) {
                 if (response.isSuccessful) {
                     val books = response.body()?.items ?: emptyList()
-                    updateRecyclerView(books) // Atualiza a lista de livros no RecyclerView
+                    updateRecyclerView(books) // Atualiza o RecyclerView com os livros do gênero
                 }
             }
 
@@ -177,18 +183,18 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    // Atualiza o RecyclerView com os livros encontrados
+    // Atualiza o RecyclerView com a lista de livros
     private fun updateRecyclerView(books: List<BookItem>) {
         bookAdapter = BookAdapter(
             books,
-            { book, isFavorite -> saveFavoriteBook(book, isFavorite) }, // Callback para salvar favoritos
-            { book -> openBookDetail(book) } // Callback para abrir detalhes
+            { book, isFavorite -> saveFavoriteBook(book, isFavorite) },
+            { book -> openBookDetail(book) }
         )
         recyclerViewBooks.adapter = bookAdapter
         bookAdapter.notifyDataSetChanged()
     }
 
-    // Salva ou remove um livro dos favoritos no Firebase
+    // Método para salvar livros favoritos no Firestore
     private fun saveFavoriteBook(book: BookItem, isFavorite: Boolean) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         val firestore = FirebaseFirestore.getInstance()
@@ -213,7 +219,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Abre os detalhes de um livro
+    // Abre a tela de detalhes do livro
     private fun openBookDetail(book: BookItem) {
         val intent = Intent(this, BookDetailActivity::class.java)
         intent.putExtra("title", book.volumeInfo.title)

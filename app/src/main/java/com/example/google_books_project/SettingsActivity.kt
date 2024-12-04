@@ -19,108 +19,116 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-// Activity responsável por gerenciar as configurações do usuário, como alterar dados, imagem de perfil, senha e logout.
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth // Instância do Firebase Authentication
-    private lateinit var firestore: FirebaseFirestore // Instância do Firestore para salvar dados do usuário
-    private lateinit var profileImageView: ImageView // Imagem de perfil do usuário
+    // Declaração de variáveis para autenticação, Firestore e a imagem de perfil
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var profileImageView: ImageView
 
-    private val PICK_IMAGE_REQUEST = 1 // Código de solicitação para selecionar imagem
-    private var selectedImageUri: Uri? = null // Armazena o URI da imagem selecionada
+    // Constante para requisição de seleção de imagem
+    private val PICK_IMAGE_REQUEST = 1
+    // Variável para armazenar a URI da imagem selecionada
+    private var selectedImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Ativa suporte para layouts sem bordas
+        enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
 
-        // Inicializa Firebase Auth e Firestore
+        // Inicializa o Firebase Auth e o Firestore
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        // Ajusta o layout para considerar as barras do sistema
+        // Configura a barra de sistema (margem para o topo, etc.) para tela cheia
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_layout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Inicializa o ImageView de perfil
+        // Inicializa o ImageView para a imagem de perfil
         profileImageView = findViewById(R.id.profile_image)
 
-        // Carrega a imagem de perfil do Firestore
+        // Carrega a imagem de perfil ao abrir a atividade
         loadProfileImage()
 
-        // Abre o seletor de imagens ao clicar na imagem de perfil
+        // Configura clique no ImageView para alterar a imagem
         profileImageView.setOnClickListener {
             openImagePicker()
         }
 
-        // Botão para voltar à MainActivity
+        // Configura o botão de voltar para a MainActivity
         val backButton = findViewById<ImageButton>(R.id.imageButton)
         backButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            finish() // Fecha a SettingsActivity
+            finish() // Fecha a tela de configurações
         }
 
-        // Configura botões da barra inferior (Home e Favoritos)
+        // Configura os botões da barra inferior (Favoritos e Home)
         setupBottomBarButtons()
 
-        // Botão para alterar dados do perfil
+        // Botão para alterar os dados do usuário (nome, gênero, senha)
         val alterarDadosButton = findViewById<Button>(R.id.alterarDadosButton)
         alterarDadosButton.setOnClickListener {
             val nameInput = findViewById<EditText>(R.id.nameInput).text.toString()
             val genreInput = findViewById<EditText>(R.id.alterarGeneroInput).text.toString()
             val passwordInput = findViewById<EditText>(R.id.emailInput).text.toString()
 
+            // Verifica se ao menos um campo foi preenchido
             if (nameInput.isNotEmpty() || genreInput.isNotEmpty() || passwordInput.isNotEmpty()) {
+                // Atualiza o nome e gênero se preenchidos
                 if (nameInput.isNotEmpty() || genreInput.isNotEmpty()) {
-                    updateUserProfile(nameInput, genreInput) // Atualiza nome ou gênero favorito
+                    updateUserProfile(nameInput, genreInput)
                 }
+
+                // Atualiza a senha se preenchida
                 if (passwordInput.isNotEmpty()) {
-                    updateUserPassword(passwordInput) // Atualiza a senha do usuário
+                    updateUserPassword(passwordInput)
                 }
             } else {
                 Toast.makeText(this, "Preencha pelo menos um campo para atualizar.", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Botão para excluir a conta do usuário
+        // Botão para excluir dados do usuário
         val excluirDadosButton = findViewById<Button>(R.id.excluirDadosButton)
         excluirDadosButton.setOnClickListener {
-            showDeleteConfirmationDialog() // Exibe o diálogo de confirmação antes de excluir a conta
+            showDeleteConfirmationDialog()
         }
 
-        // Botão para logout
+        // Botão para realizar o logout
         val logoutButton = findViewById<Button>(R.id.logoutButton)
         logoutButton.setOnClickListener {
-            FirebaseAuth.getInstance().signOut() // Realiza logout
+            FirebaseAuth.getInstance().signOut() // Realiza o logout
             Toast.makeText(this, "Logout realizado com sucesso!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-            finish() // Fecha a SettingsActivity
+            finish() // Fecha a tela de configurações
         }
     }
 
-    // Configura os botões da barra inferior (Home e Favoritos)
+    // Configura os botões de navegação da barra inferior (Favoritos e Home)
     private fun setupBottomBarButtons() {
+        // Botão de Favoritos
         val favoritosButton = findViewById<ImageButton>(R.id.favoritos)
         favoritosButton.setOnClickListener {
             val intent = Intent(this, FavoritesActivity::class.java)
             startActivity(intent)
-            finish() // Fecha a SettingsActivity
+            finish()
         }
 
+        // Botão de Home
         val homeButton = findViewById<ImageButton>(R.id.home)
         homeButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            finish() // Fecha a SettingsActivity
+            finish()
         }
     }
 
-    // Atualiza nome e gênero favorito do usuário no Firestore
+    // Atualiza os dados do usuário no Firestore (nome e gênero)
     private fun updateUserProfile(name: String, genre: String) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
@@ -139,7 +147,7 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    // Atualiza a senha do usuário autenticado
+    // Atualiza a senha do usuário
     private fun updateUserPassword(newPassword: String) {
         val user = auth.currentUser
         user?.updatePassword(newPassword)
@@ -152,20 +160,20 @@ class SettingsActivity : AppCompatActivity() {
             }
     }
 
-    // Exibe diálogo de confirmação para exclusão da conta
+    // Exibe o diálogo de confirmação para excluir a conta
     private fun showDeleteConfirmationDialog() {
         val dialog = AlertDialog.Builder(this)
             .setTitle("Confirmação")
             .setMessage("Tem certeza que deseja excluir sua conta? Essa ação é irreversível.")
             .setPositiveButton("Excluir") { _, _ ->
-                deleteAccount() // Exclui a conta do usuário
+                deleteAccount()
             }
             .setNegativeButton("Cancelar", null)
             .create()
         dialog.show()
     }
 
-    // Exclui a conta do usuário e os dados no Firestore
+    // Exclui a conta do usuário
     private fun deleteAccount() {
         val user = auth.currentUser
         val userId = user?.uid
@@ -192,24 +200,24 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    // Abre o seletor de imagens para alterar a imagem de perfil
+    // Abre o seletor de imagens para escolher uma nova imagem de perfil
     private fun openImagePicker() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
         startActivityForResult(intent, PICK_IMAGE_REQUEST)
     }
 
-    // Lida com o resultado da seleção de imagem
+    // Recebe o resultado da seleção da imagem
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             selectedImageUri = data.data
-            profileImageView.setImageURI(selectedImageUri) // Atualiza a imagem no ImageView
-            saveImageToFirestore() // Salva a URI da imagem no Firestore
+            profileImageView.setImageURI(selectedImageUri)
+            saveImageToFirestore() // Salva a nova imagem no Firestore
         }
     }
 
-    // Salva a URI da imagem de perfil no Firestore
+    // Salva a imagem de perfil no Firestore
     private fun saveImageToFirestore() {
         val userId = auth.currentUser?.uid
         if (userId != null && selectedImageUri != null) {
@@ -225,7 +233,7 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    // Carrega a imagem de perfil do Firestore ao iniciar a Activity
+    // Carrega a imagem de perfil ao abrir a atividade
     private fun loadProfileImage() {
         val userId = auth.currentUser?.uid
         if (userId != null) {
@@ -233,7 +241,7 @@ class SettingsActivity : AppCompatActivity() {
                 .addOnSuccessListener { document ->
                     val imageUri = document.getString("profileImageUri")
                     if (!imageUri.isNullOrEmpty()) {
-                        profileImageView.setImageURI(Uri.parse(imageUri)) // Define a URI no ImageView
+                        profileImageView.setImageURI(Uri.parse(imageUri))
                     }
                 }
                 .addOnFailureListener {
