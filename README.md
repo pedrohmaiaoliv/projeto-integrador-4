@@ -16,6 +16,7 @@ Equipe:<br>
 
 Este projeto faz parte das atividades práticas da disciplina e visa o desenvolvimento de um aplicativo mobile, incluindo a definição de requisitos e prototipação.
 
+## LINK DA APRESENTAÇÃO N2 https://youtu.be/2mChOh0Unrs ## <br>
 
 
 Link da Apresentacao:<br>
